@@ -29,4 +29,15 @@ app.get("/products", (req, res) => {
   ];
   res.json(products);
 });
+
+
+app.get("/register", async(req, res) => {
+ const result = await UserActivation.insertOne({name:"John"}) ;;
+ return res.json(result);
+});
+app.post("/register", async(req, res) => {
+  const {name} =req.body
+ const result = await UserActivation.insertOne({name:"name"});
+ return res.json(result);
+});
  
