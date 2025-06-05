@@ -1,43 +1,25 @@
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
+
+import userRouter from "./routes/userRoutes.js";
+import productRouter from "./routes/productRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
+import dotenv from 'dotenv'
+dotenv.config();
+
+
 const app = express();
+app.use(cors());
+app.use(express.json());
+const MONGODB_URI=process.env.MONGODB_URI
+
+app.use("/users", userRouter);
+app.use("/products", productRouter);
+app.use("/orders",orderRouter);
+
+
 app.listen(8080, () => {
+  mongoose.connect(`${MONGODB_URI}`);
   console.log("Server Started");
 });
-app.use(cors());
-app.get("/", (req, res) => {
-  return res.send("Good Morning");
-});
-
-app.get("/greet", (req, res) => {
-  res.send("Greetings");
-});
-
-app.get("/name", (req, res) => {
-  res.send("Adithya");
-});
-
-app.get("/weather", (req, res) => {
-  res.send("30 degrees");
-});
-
-app.get("/products", (req, res) => {
-  const products = [
-    { name: "Product 1", price: 34 },
-    { name: "Product 2", price: 64 },
-    { name: "Product 3", price: 45 },
-  ];
-  res.json(products);
-});
-
-
-app.get("/register", async(req, res) => {
- const result = await UserActivation.insertOne({name:"John"}) ;;
- return res.json(result);
-});
-app.post("/register", async(req, res) => {
-  const {name} =req.body
- const result = await UserActivation.insertOne({name:"name"});
- return res.json(result);
-});
- 
