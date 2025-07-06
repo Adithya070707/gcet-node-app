@@ -1,27 +1,26 @@
-import express from 'express'
-import userModel from "../models/userModel.js";
+ import express from 'express'
+import productModel from "../models/productModel.js";
 
-const userRouter = express.Router()
+const productRouter = express.Router()
 
-userRouter.post("/register", async (req, res) => {
-  const { name, email, pass } = req.body;
-  const result = await userModel.insertOne({ name: name, email: email, pass: pass });
-  return res.json(result);
+productRouter.get("/all", async (req, res) => {
+  const products = await productModel.find();
+  res.json(products);
 });
 
-userRouter.post("/login", async (req, res) => {
-  const { email, pass } = req.body;
-  const result = await userModel.findOne({ email, pass });
-  if (!result) return res.json({ message: "Invalid user or password" });
-  return res.json(result);
+productRouter.post("/new", async (req, res) => {
+  const product = req.body
+  const products = await productModel.create(product);
+  res.json(products);
+});
+productRouter.delete("/delete/:id", async (req, res) => {
+  try {
+    await productModel.findByIdAndDelete(req.params.id);
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete product" });
+  }
 });
 
 
-userRouter.post("/:id/name", async (req, res) => {
-  const { email, pass } = req.body;
-  const result = await userModel.findOne({ email, },{_id:0,name:1});
-  if (!result) return res.json({ message: "Invalid user or password" });
-  return res.json(result);
-});
-
-export default userRouter
+export default productRouter
