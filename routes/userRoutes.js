@@ -1,26 +1,33 @@
- import express from 'express'
-import productModel from "../models/productModel.js";
+ import express from "express";
+import userModel from "../models/userModel.js";
+import bcrypt from "bcryptjs";
+const userRouter = express.Router();
+import jwt from "jsonwebtoken";
+const SECRET_KEY = "helloworld";
 
-const productRouter = express.Router()
-
-productRouter.get("/all", async (req, res) => {
-  const products = await productModel.find();
-  res.json(products);
+userRouter.post("/register", async (req, res) => {
+  const { name, email, pass } = req.body;
+  const hashpassword = await bcrypt.hash(pass, 10);
+  const result = await userModel.create({
+    name: name,
+    email: email,
+    pass: hashpassword,
+  });
+  return res.json(result);
 });
 
-productRouter.post("/new", async (req, res) => {
-  const product = req.body
-  const products = await productModel.create(product);
-  res.json(products);
-});
-productRouter.delete("/delete/:id", async (req, res) => {
-  try {
-    await productModel.findByIdAndDelete(req.params.id);
-    res.json({ message: "Product deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to delete product" });
+userRouter.post("/login", async (req, res) => {
+  const { email, pass } = req.body;
+  const result = await userModel.findOne({ email });
+  if (!result) return res.json({ message: "Invalid user" });
+  const matchPassword = await bcrypt.compare(pass, result.pass);
+  if (!matchPassword) {
+    return res.status(400).json({ message: "Invalid Password" });
   }
+  const token = jwt.sign({ email: result.email, id: result._id }, SECRET_KEY);
+  //console.log(result);
+  //return res.json({ user: result, token: token });
+  return res.json({ result, token });
 });
 
-
-export default productRouter
+export default userRouter;
