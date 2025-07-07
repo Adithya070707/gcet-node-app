@@ -1,4 +1,4 @@
- import express from "express";
+import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from 'dotenv';
@@ -15,7 +15,10 @@ const MONGO_URI = process.env.MONGO_URI
 
 app.use("/users", userRouter);
 app.use("/products", productRouter);
-app.use("/orders",orderRouter)
+app.use("/orders", orderRouter);
+app.get("/", (_req, res) => {
+  res.send("API is running");
+});
 
 mongoose
   .connect(MONGO_URI)

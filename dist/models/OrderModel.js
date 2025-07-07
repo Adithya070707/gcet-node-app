@@ -1,4 +1,5 @@
- import mongoose from 'mongoose'
+
+import mongoose from 'mongoose'
 const orderSchema = mongoose.Schema({
   email: { type: String },
   orderValue: { type: Number },

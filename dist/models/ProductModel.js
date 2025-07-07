@@ -1,4 +1,4 @@
- import mongoose from "mongoose";
+import mongoose from "mongoose";
 const productSchema = mongoose.Schema({
   pid: { type: Number },
   name: { type: String },

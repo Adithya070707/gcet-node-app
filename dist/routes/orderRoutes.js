@@ -1,4 +1,4 @@
- import express from "express";
+import express from "express";
 import orderModel from "../models/orderModel.js";
 
 const orderRouter = express.Router();
